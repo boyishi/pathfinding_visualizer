@@ -110,19 +110,20 @@ function generateMaze(grid, firstRow, lastRow, firstCol, lastCol, animations, is
             rowIdxToBeWall = Math.floor(Math.random() * validHeight) + firstValidRow;
         }
 
-        grid.forEach((row, index) => {
-            if (index < firstValidRow || index > lastValidRow) return;
-            if (index === rowIdxToBeWall) {
-                isPassage[index][colIdxToBeWall] = true;
+        grid.forEach((row, currentRow) => {
+            if (currentRow < firstValidRow || currentRow > lastValidRow) return;
+            if (currentRow === rowIdxToBeWall) {
+                isPassage[currentRow][colIdxToBeWall] = true;
                 return;
             }
 
-            row.forEach((node, idx) => {
-                if (node.type === "start" || node.type === "finish") {
-                    isPassage[index][idx] = true;
+            row.forEach((node, col) => {
+                if (node.isStart || node.isFinish) {
+                    isPassage[currentRow][col] = true;
                 }
-                if (isPassage[index][idx]) return;
-                idx === colIdxToBeWall && animations.push(node);
+
+                if (isPassage[currentRow][col]) return;
+                col === colIdxToBeWall && animations.push(node);
             });
         });
 

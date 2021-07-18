@@ -38,6 +38,7 @@ select:focus {
 .runBtn:hover {
     color: black;
     font-weight: 600;
+    cursor: pointer;
 }
 
 .mt-15 {
