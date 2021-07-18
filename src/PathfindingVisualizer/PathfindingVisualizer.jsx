@@ -1,9 +1,11 @@
 import React, { Component } from "react";
-
 import Node from "./Node/Node.jsx";
 import { showPopUp } from "./Tutorial/Tutorial.jsx";
 import Header from "./Header/Header";
-import { dijkstra, getNodesInShortestPathOrder } from "../algorithms/dijkstra";
+import { dijkstra } from "../algorithms/dijkstra";
+import { dfs } from "../algorithms/dfs";
+import { getNodesInShortestPathOrder } from "../algorithms/common.js";
+import generateMaze from "../maze/RecursiveMaze";
 
 import "./PathfindingVisualizer.css";
 
@@ -27,6 +29,7 @@ export default class PathfindingVisualizer extends Component {
             weight: 1,
             changeWeight: false,
             distanceToBeTraveled: 0,
+            algorithm: "Dijkstra",
         };
 
         this.visualizeDijkstra = this.visualizeDijkstra.bind(this);
@@ -35,17 +38,24 @@ export default class PathfindingVisualizer extends Component {
         this.weightChangeHandler = this.weightChangeHandler.bind(this);
         this.toggleWeight = this.toggleWeight.bind(this);
         this.pointChangeHandler = this.pointChangeHandler.bind(this);
+        this.changeAlgorithm = this.changeAlgorithm.bind(this);
+        this.animateMaze = this.animateMaze.bind(this);
+        this.clearGrid = this.clearGrid.bind(this);
     }
 
     // Creating grid
     componentDidMount() {
+        this.clearGrid();
+    }
+
+    clearGrid() {
         const grid = getInitialGrid();
         this.setState({ grid });
     }
 
     // On pressing the mouse down
     handleMouseDown(row, col) {
-        if (this.state.topMessage !== "Dijkstra Algorithm") return;
+        if (!this.state.topMessage.includes("Algorithm")) return;
 
         let newGrid = [];
 
@@ -60,7 +70,7 @@ export default class PathfindingVisualizer extends Component {
 
     // On entering the new node element.
     handleMouseEnter(row, col) {
-        if (this.state.topMessage !== "Dijkstra Algorithm") return;
+        if (!this.state.topMessage.includes("Algorithm")) return;
         if (!this.state.mouseIsPressed) return;
 
         let newGrid = [];
@@ -76,7 +86,7 @@ export default class PathfindingVisualizer extends Component {
 
     // When we release the mouse
     handleMouseUp() {
-        if (this.state.topMessage !== "Dijkstra Algorithm") return;
+        if (!this.state.topMessage.includes("Algorithm")) return;
         this.setState({ mouseIsPressed: false });
     }
 
@@ -85,9 +95,33 @@ export default class PathfindingVisualizer extends Component {
         const { grid } = this.state;
         const startNode = grid[START_NODE_ROW][START_NODE_COL];
         const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
-        const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
+        let visitedNodesInOrder;
+
+        switch (this.state.algorithm) {
+            case "Dijkstra":
+                visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
+                break;
+            case "DFS":
+                visitedNodesInOrder = dfs(grid, startNode, finishNode);
+                break;
+            default:
+                break;
+        }
         const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
         this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+    }
+
+    animateMaze() {
+        const { grid } = this.state;
+        const wallAnimations = generateMaze(grid);
+
+        for (let i = 0; i < wallAnimations.length; i++) {
+            setTimeout(() => {
+                const { row, col } = wallAnimations[i];
+                const updatedGrid = getGridWithNewWall(grid, row, col);
+                this.setState({ grid: updatedGrid });
+            }, 15 * i);
+        }
     }
 
     animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
@@ -130,38 +164,26 @@ export default class PathfindingVisualizer extends Component {
         this.setState({ distanceToBeTraveled: timeTaken });
     }
 
-    // onClick={() => this.resetGrid()}
-    // resetGrid() {
+    changeAlgorithm = (e) => {
+        let _algorithm = e.target.value;
+        let message;
 
-    //   const newGrid = getInitialGrid();
+        switch (_algorithm) {
+            case "Dijkstra":
+                message = "Dijkstra Algorithm";
+                break;
+            case "DFS":
+                message = "DFS Algorithm";
+                break;
+            default:
+                break;
+        }
 
-    //   START_NODE_ROW = 0;
-    //   START_NODE_COL = 0;
-    //   FINISH_NODE_ROW = ROW_MAX_LENGTH - 1;
-    //   FINISH_NODE_COL = COL_MAX_LENGTH - 1;
-
-    //   document.getElementById("start_row").value = START_NODE_ROW;
-    //   document.getElementById("start_col").value = START_NODE_COL;
-    //   document.getElementById("end_row").value = FINISH_NODE_ROW;
-    //   document.getElementById("end_col").value = FINISH_NODE_COL;
-
-    //   for (let row = 0; row < ROW_MAX_LENGTH; row++) {
-    //     for (let col = 0; col < COL_MAX_LENGTH; col++) {
-    //       if (row === START_NODE_ROW && col === START_NODE_COL) {
-    //         document.getElementById(`node-${row}-${col}`).className =
-    //           "node node-start";
-    //       } else if (row === FINISH_NODE_ROW && col === FINISH_NODE_COL) {
-    //         document.getElementById(`node-${row}-${col}`).className =
-    //           "node node-finish";
-    //       } else {
-    //         document.getElementById(`node-${row}-${col}`).className = "node";
-    //       }
-    //     }
-    //   }
-    //   this.setState({ topMessage: "Dijkstra Algorithm" });
-
-    //   this.setState({ grid: newGrid });
-    // }
+        this.setState({
+            algorithm: _algorithm,
+            topMessage: message,
+        });
+    };
 
     weightChangeHandler = (event) => {
         this.setState({ weight: event.target.value });
@@ -229,24 +251,19 @@ export default class PathfindingVisualizer extends Component {
 
         return (
             <div className="pathfindingVisualizer">
-                <div className="container">
-                    <div className="heading">
-                        <h2 onClick={showPopUp}>Search Visualizer</h2>
-                        <h2>{topMessage}</h2>
-                    </div>
-                    {/* Show the header */}
-                    <Header
-                        topMessage={topMessage}
-                        distanceToBeTraveled={distanceToBeTraveled}
-                        changeWeightText={changeWeightText}
-                        visualizeDijkstra={this.visualizeDijkstra}
-                        toggleWeight={this.toggleWeight}
-                        pointChangeHandler={this.pointChangeHandler}
-                    />
-                    <p>
-                        Dijkstra's Algorithm is weighted and guarantees the shortest path! <span className="ref"></span>
-                    </p>
-                </div>
+                <Header
+                    grid={grid}
+                    topMessage={topMessage}
+                    showPopUp={showPopUp}
+                    distanceToBeTraveled={distanceToBeTraveled}
+                    changeWeightText={changeWeightText}
+                    clearGrid={this.clearGrid}
+                    animateMaze={this.animateMaze}
+                    visualizeDijkstra={this.visualizeDijkstra}
+                    toggleWeight={this.toggleWeight}
+                    pointChangeHandler={this.pointChangeHandler}
+                    changeAlgorithm={this.changeAlgorithm}
+                />
 
                 <div className="visualGridContainer">
                     <div className="gridBox">
@@ -330,6 +347,17 @@ const getNewGridWithWeightToggled = (grid, row, col, weight) => {
         ...node, // copying other properties of the node
         isWeight: !node.isWeight,
         weight: parseInt(weight),
+    };
+    newGrid[row][col] = newNode;
+    return newGrid;
+};
+
+const getGridWithNewWall = (grid, row, col) => {
+    const newGrid = [...grid];
+    const node = newGrid[row][col];
+    const newNode = {
+        ...node, // copying other properties of the node
+        isWall: true,
     };
     newGrid[row][col] = newNode;
     return newGrid;

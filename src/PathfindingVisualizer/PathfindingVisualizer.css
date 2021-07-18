@@ -1,28 +1,26 @@
-*
-{
+* {
     margin: 0;
     padding: 0;
 }
 
+.inline-block {
+    display: inline-block;
+}
 
-.pathfindingVisualizer
-{
+.pathfindingVisualizer {
     min-width: 100%;
     max-width: 100%;
 }
 
-.pathfindingVisualizer .container
-{
+.pathfindingVisualizer .container {
     min-width: 100%;
     max-width: 100%;
-    padding: auto;
-
+    padding-bottom: 20px;
     color: #fff;
     background-color: #34495e;
 }
 
-.pathfindingVisualizer .container .heading
-{
+.pathfindingVisualizer .container .heading {
     display: flex;
 
     padding: 5px 10px 10px 10px;
@@ -32,35 +30,20 @@
     justify-content: space-between;
 }
 
-.pathfindingVisualizer .container .heading h2
-{
+.pathfindingVisualizer .container .heading h2 {
     cursor: pointer;
 }
 
-.textBox
-{
+.textBox {
     line-height: 20px;
-
-    display: flex;
     display: flex;
 
-    padding: 10px;
-
+    padding-top: 5px;
+    padding-bottom: 30px;
     justify-content: space-around;
 }
 
-.textBox .weightContainer input
-{
-    height: 20px;
-
-    text-align: center;
-
-    color: #fff;
-    background-color: transparent;
-}
-
-.textBox .weightContainer button
-{
+.textBox .weightContainer button {
     font-size: 12px;
     font-weight: 500;
 
@@ -68,7 +51,6 @@
 
     width: 60px;
     margin-left: 6px;
-    padding: 5px 10px;
 
     color: #fff;
     border-color: #48c9b0;
@@ -76,48 +58,26 @@
     background-color: #48c9b0;
 }
 
-.textBox .weightContainer button:hover
-{
+.textBox .weightContainer button:hover {
     color: #000;
+    cursor: pointer;
 }
 
-.textBox .startPointContainer
-{
-    font-weight: 500;
-}
-.textBox .startPointContainer input
-{
-    width: 40px;
+.textBox .weightContainer,
+.startPointContainer,
+.endPointContainer,
+input {
     height: 20px;
-    margin: 0 5px 0 5px;
-    padding: 0 10px;
-
+    text-align: center;
     color: #fff;
     background-color: transparent;
 }
 
-.textBox .endPointContainer
-{
-    font-weight: 500;
-}
-.textBox .endPointContainer input
-{
-    width: 40px;
-    height: 20px;
-    margin: 0 5px 0 5px;
-    padding: 0 10px;
-
-    color: #fff;
-    background-color: transparent;
-}
-
-.container p
-{
+.container p {
     padding: 8px 10px 5px 10px;
 }
 
-.buttonContainer
-{
+.buttonContainer {
     font-size: 12px;
     font-weight: 500;
 
@@ -127,71 +87,37 @@
     padding: 5px 10px 5px 10px;
 
     cursor: pointer;
-    transition-duration: .8s;
+    transition-duration: 0.8s;
 
     color: #fff;
     border-color: #48c9b0;
     border-radius: 5px;
     background-color: #48c9b0;
+    display: inline-block;
 }
-.buttonContainer:hover
-{
+.buttonContainer:hover {
     background-color: #87dfcc;
 }
 
-.btn:hover
-{
-    color: #111;
-}
-
-.buttonContainer p
-{
+.buttonContainer p {
     padding: 0;
 }
 
-.visualGridContainer .gridBox
-{
-    min-width: 80%;
-    max-width: 80%;
+.visualGridContainer .gridBox {
+    max-width: 80em;
     margin: 5px auto;
 
     border: 2px solid black;
 }
 
+.maxWidth-600 {
+    max-width: 600px;
+}
 /* Responsiveness */
 
-@media(max-width:780px)
-{
-    body
-    {
-        background-color: #34495e;
-    }
-    .visualGridContainer .gridBox
-    {
-        min-width: 200%;
-        max-width: 200%;
-        margin: 5px auto;
-
-        border: 2px solid black;
-        background-color: #fff;
-    }
-
-    .pathfindingVisualizer .container
-    {
-        min-width: 200%;
-        max-width: 200%;
-        padding: auto;
-
-        color: #fff;
-        background-color: #34495e;
-    }
-
-    .ref::before
-    {
-        font-weight: bold;
-
-        content: '(View on Lanscape Mode) ';
-
-        color: #fff;
+@media (max-width: 840px) {
+    .pathfindingVisualizer,
+    .PopUpTextBox {
+        display: none;
     }
 }

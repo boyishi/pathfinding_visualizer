@@ -1,0 +1,45 @@
+select {
+    padding: 3px 10px;
+    background-color: #48c9b0;
+    color: white;
+    border-radius: 10%;
+    margin-right: 5px;
+}
+
+select:focus {
+    border: none;
+    outline: none;
+}
+
+.customBtn {
+    padding: 5px 10px 5px 10px;
+    border-radius: 10%;
+    border: none;
+    background-color: #48c9b0;
+    color: white;
+    margin-top: 25px;
+    margin-right: 5px;
+}
+
+.customBtn:hover {
+    color: black;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.runBtn {
+    padding: 5px 5px 5px 5px;
+    border-radius: 10%;
+    background-color: #48c9b0;
+    color: white;
+    border: none;
+}
+
+.runBtn:hover {
+    color: black;
+    font-weight: 600;
+}
+
+.mt-15 {
+    margin-top: 15px;
+}
